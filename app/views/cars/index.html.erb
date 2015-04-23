@@ -1,0 +1,25 @@
+<%= render 'date_form' %>
+
+<table class="table-striped table-bordered">
+  <col style="width: 15%">
+  <col style="width: 15%">
+  <col style="width: 15%">
+  <col style="width: 25%">
+  <col style="width: 15%">
+  <tr>
+    <th><%= sortable "Year", "year" %></th>
+    <th><%= sortable "Make", "make" %></th>
+    <th><%= sortable "Model", "model" %></th>
+    <th><%= sortable "Date Sold", "date_sold" %></th>
+    <th><%= sortable "Price", "price" %></th>
+  </tr>
+  <% @cars.each do |car| %>
+  <tr>
+    <td><%= car.year %></td>
+    <td><%= car.make %></td>
+    <td><%= car.model %></td>
+    <td><%= car.date_sold.strftime("%B, %e, %Y") %></td>
+    <td><%= number_with_precision(car.price, :precision => 2, :delimiter => ',') %></td>
+  </tr>
+  <% end %>
+</table>
