@@ -1,3 +1,7 @@
+<div id="chart"></div>
+
+<div id="models"></div>
+
 <%= render 'date_form' %>
 
 <table class="table-striped table-bordered">
@@ -23,3 +27,35 @@
   </tr>
   <% end %>
 </table>
+
+<%= javascript_tag do %>
+//<script>
+dates = <%= @dates %>;
+prices = <%= @prices %>;
+dates = dates.map(function(milliseconds) {
+                    return new Date(milliseconds)
+                  });
+dates.splice(0, 0, "Month")
+prices.splice(0, 0, "Total Sales")
+
+console.log(dates);
+console.log(prices);
+var chart = c3.generate({
+    data: {
+        x: 'Month',
+        columns: [
+            dates,
+            prices
+        ]
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                format: '%m/%Y'
+            }
+        }
+    }
+});
+
+<% end %>

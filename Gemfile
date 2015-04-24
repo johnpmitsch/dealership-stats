@@ -1,5 +1,8 @@
 source 'https://rubygems.org'
 
+gem 'momentjs-rails'
+gem 'c3-rails'
+gem "d3_rails"
 gem 'bootstrap-sass', '~> 3.2.0'
 gem 'autoprefixer-rails'
 gem 'faker'

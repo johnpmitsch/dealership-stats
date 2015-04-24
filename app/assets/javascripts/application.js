@@ -14,4 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require bootstrap-sprockets
+//= require d3
+//= require c3
+//= require moment
 //= require_tree .
