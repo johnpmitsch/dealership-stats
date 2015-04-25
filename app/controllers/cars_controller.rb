@@ -1,5 +1,5 @@
 class CarsController < ApplicationController
-  helper_method :sort_column, :sort_direction, :price_total_per_month
+  helper_method :sort_column, :sort_direction, :price_total_per_month, :car_arrays
 
   def index
     p 'index \n'
@@ -9,8 +9,9 @@ class CarsController < ApplicationController
       @cars = Car.all.order(sort_column + " " + sort_direction)
     end
     @dates, @prices = price_total_per_month
-    p @dates
-    p @prices
+    @car_arrays = models_sold_per_month
+    @total_models_sold = total_models_sold
+    p @total_models_sold
   end
 
   def new
@@ -79,5 +80,53 @@ class CarsController < ApplicationController
       end
     end
     return dates, prices
+  end
+
+  def models_sold_per_month
+    """Gets the number of cars sold each month by each model of car. Returns an
+    array of arrays"""
+    car_models = get_car_models
+    min_year, max_year = min_max_year
+    car_arrays = []
+    car_models.each do |model|
+      sales_per_model = [model]  # store model name as 0 index in array for c3 chart reference
+      (min_year..max_year).each do |year|
+        (1..12).each do |month|
+          cars_by_month = Car.where("strftime('%m', date_sold) + 0 = ?", month.to_i).
+                              where("strftime('%Y', date_sold) + 0 = ?", year.to_i)
+          if cars_by_month.length > 0
+            car_count_by_model= cars_by_month.where(model: model).count
+            sales_per_model << car_count_by_model
+          end
+        end
+      end
+      car_arrays << sales_per_model
+    end
+    return car_arrays
+  end
+
+  def total_models_sold
+    """Gets the number of models sold per model. Returns an array of arrays"""
+    car_models = get_car_models
+    car_arrays = []
+    car_models.each do |model|
+      sales_per_model = [model, Car.where(model: model).count]
+      car_arrays << sales_per_model
+    end
+    return car_arrays
+  end
+
+  def min_max_year
+    min_year = Car.minimum("date_sold").strftime('%Y')
+    max_year = Date.today.strftime("%Y")
+    return min_year, max_year
+  end
+
+  def get_car_models
+    car_models = []
+    Car.select(:model).distinct.each do |car|
+      car_models << car.model
+    end
+    return car_models
   end
 end
